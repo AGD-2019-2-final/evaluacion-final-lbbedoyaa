@@ -28,4 +28,18 @@
 fs -rm -f -r output;
 --
 
+u = LOAD 'data.csv' USING PigStorage (',')
+    AS (c1:INT, 
+       c2:CHARARRAY, 
+       c3:CHARARRAY, 
+       c4:CHARARRAY,
+       c5:CHARARRAY,
+       c6:INT);
+       
+y= foreach u generate CONCAT(c2,'@', c3);
+--y= group y by ($0, $1);
 
+--y= foreach y generate $0, COUNT(y);
+
+STORE y INTO 'output';
+fs -get output/ .
