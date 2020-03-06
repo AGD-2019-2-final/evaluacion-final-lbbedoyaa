@@ -12,3 +12,17 @@ fs -rm -f -r output;
 --
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
+
+u = LOAD 'data.tsv' USING PigStorage ('\t')
+    AS (c1:CHARARRAY, 
+       c2:BAG{t:TUPLE(p:CHARARRAY)}, 
+       c3:MAP[]);
+       
+y= foreach u generate flatten(c3);
+y= group y by $0;
+
+--dump y 
+z= foreach y generate group, COUNT(y);
+
+STORE z INTO 'output' USING PigStorage (',');
+fs -get output/ .
