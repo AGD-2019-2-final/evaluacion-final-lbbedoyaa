@@ -40,4 +40,16 @@ LOAD DATA LOCAL INPATH 'tbl1.csv' INTO TABLE tbl1;
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
 
+DROP TABLE IF EXISTS a;
+CREATE TABLE a AS
+    SELECT c1, c2, c3, c4, UPPER(letras) AS letras
+    FROM tbl0 
+    LATERAL VIEW EXPLODE(c5) tbl0 AS letras;
 
+DROP TABLE IF EXISTS resultados;
+CREATE TABLE resultados AS 
+SELECT concat_ws(':', collect_set(letras)) FROM a GROUP BY c1, c2, c3, c4;
+
+INSERT OVERWRITE LOCAL DIRECTORY 'output'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ':'
+SELECT * FROM resultados;
