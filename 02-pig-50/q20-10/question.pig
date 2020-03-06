@@ -16,6 +16,8 @@
 -- 
 -- Escriba el resultado a la carpeta `output` del directorio actual.
 -- 
+--fs -put data.csv;
+
 fs -rm -f -r output;
 -- 
 u = LOAD 'data.csv' USING PigStorage(',') 
@@ -28,3 +30,8 @@ u = LOAD 'data.csv' USING PigStorage(',')
 --
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
+y= FOREACH u GENERATE firstname, color;
+y= FILTER y BY NOT $1 MATCHES '^b.*';
+
+STORE y INTO 'output' USING PigStorage(',');
+fs -get output/ .
