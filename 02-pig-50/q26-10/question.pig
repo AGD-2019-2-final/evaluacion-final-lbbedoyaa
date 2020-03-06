@@ -27,3 +27,10 @@ u = LOAD 'data.csv' USING PigStorage(',')
 --
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
+
+y = filter (foreach u generate firstname) by $0 >= 'M';
+
+--dump y;
+
+STORE y INTO 'output' USING PigStorage('\t');
+fs -get output/ . ;
