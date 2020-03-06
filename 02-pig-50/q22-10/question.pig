@@ -28,4 +28,9 @@ u = LOAD 'data.csv' USING PigStorage(',')
 --
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
+y= FOREACH u GENERATE firstname, color;
+y= FILTER y BY $1 MATCHES '.*n';
+--DUMP y;
 
+STORE y INTO 'output' USING PigStorage(',');
+fs -get output/ . ;
