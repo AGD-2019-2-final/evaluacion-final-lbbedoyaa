@@ -27,4 +27,25 @@ LOAD DATA LOCAL INPATH 'data.tsv' INTO TABLE t0;
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
 
+DROP TABLE IF EXISTS a;
+CREATE TABLE a AS
+SELECT minusculas, c3
+FROM t0
+LATERAL VIEW EXPLODE(c2) t0 AS minusculas;
+
+DROP TABLE IF EXISTS b;
+CREATE TABLE b AS
+SELECT minusculas, clave
+FROM a
+LATERAL VIEW EXPLODE(c3) a AS clave, valor;
+
+DROP TABLE IF EXISTS resultados;
+CREATE TABLE resultados AS
+SELECT minusculas, clave, COUNT(1)
+FROM b
+GROUP BY minusculas, clave;
+
+INSERT OVERWRITE LOCAL DIRECTORY 'output'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+SELECT * FROM resultados;
 
