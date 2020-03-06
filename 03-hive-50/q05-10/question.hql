@@ -40,3 +40,17 @@ LOAD DATA LOCAL INPATH 'tbl1.csv' INTO TABLE tbl1;
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
 
+DROP TABLE IF EXISTS a;
+CREATE TABLE a AS
+SELECT year(c4) AS year, letras FROM tbl0 
+LATERAL VIEW EXPLODE(c5) tbl0 AS letras;
+
+DROP TABLE IF EXISTS b;
+CREATE TABLE b 
+AS SELECT year,letras, COUNT(1) AS count
+FROM a
+GROUP BY year,letras;
+
+INSERT OVERWRITE LOCAL DIRECTORY 'output'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+SELECT * FROM b;
