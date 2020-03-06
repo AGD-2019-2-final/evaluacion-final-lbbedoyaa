@@ -24,3 +24,14 @@ LOAD DATA LOCAL INPATH 'data.tsv' INTO TABLE t0;
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
 
+DROP TABLE IF EXISTS a;
+CREATE TABLE a AS
+SELECT EXPLODE(C3) AS (key, val )FROM t0;
+
+DROP TABLE IF EXISTS resultados;
+CREATE TABLE resultados AS
+SELECT key, COUNT(1) FROM a GROUP BY key;
+
+INSERT OVERWRITE LOCAL DIRECTORY 'output'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+SELECT * FROM resultados;
