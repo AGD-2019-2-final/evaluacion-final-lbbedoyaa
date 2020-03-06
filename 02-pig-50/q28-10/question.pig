@@ -30,3 +30,13 @@ u = LOAD 'data.csv' USING PigStorage(',')
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
 
+
+y= FOREACH u GENERATE birthday, SUBSTRING(birthday, 0, 4), SUBSTRING(birthday, 2, 4);
+y= FOREACH y GENERATE $1, $2;
+
+STORE y INTO 'output' USING PigStorage(',');
+fs -get output/ .
+
+
+--y= FOREACH u GENERATE REGEX_EXTRACT(birthday, '(.*)-(.*)-(.*)', 1), SUBSTRING(birthday, 2, 4);
+--DUMP y ;
