@@ -40,3 +40,10 @@ LOAD DATA LOCAL INPATH 'tbl1.csv' INTO TABLE tbl1;
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
 
+DROP TABLE IF EXISTS resultados;
+
+CREATE TABLE resultados AS SELECT DISTINCT arreglo.letras FROM (SELECT explode(c5) AS letras FROM tbl0) AS arreglo;
+
+INSERT OVERWRITE LOCAL DIRECTORY 'output'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+SELECT * FROM resultados;
