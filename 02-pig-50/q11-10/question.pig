@@ -26,6 +26,8 @@
 -- 
 -- Escriba el resultado a la carpeta `output` del directorio actual.
 -- 
+
+
 fs -rm -f -r output;
 --
 u = LOAD 'data.csv' USING PigStorage(',') 
@@ -38,3 +40,8 @@ u = LOAD 'data.csv' USING PigStorage(',')
 --
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
+y= order(foreach u generate surname, UPPER(surname) , LOWER(surname)) by surname;
+--dump y;
+
+STORE y INTO 'output' USING PigStorage(',');
+fs -get output/ .
